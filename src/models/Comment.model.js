@@ -11,7 +11,7 @@ const CommentSchema = new Schema({
         ref:'User',
         required:true
     }
-})
+},{timestamps:true})
 const Comment =
     mongoose.models.comment || model('Comment', CommentSchema);
 export default Comment;

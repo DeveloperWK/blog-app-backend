@@ -1,11 +1,12 @@
+import { configDotenv } from "dotenv";
 import transporter from "../config/nodemailer.config.js";
-
+configDotenv();
 const verifyOtpSend = async (email, otp) => {
-    await transporter.sendMail({
-        from: process.env._SMTP_USERNAME,
-        to: email,
-        subject: 'Verify Your Email',
-        html: `<!DOCTYPE html>
+  await transporter.sendMail({
+    from: process.env._SMTP_USERNAME,
+    to: email,
+    subject: "Verify Your Email - CodeVerse — A Developer's Diary",
+    html: `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -68,13 +69,13 @@ const verifyOtpSend = async (email, otp) => {
         <p>Please use this code to complete your verification. The OTP is valid for 10 minutes.</p>
         <p>If you didn't request this, please ignore this email.</p>
         <div class="footer">
-            <p>Need help? <a href="mailto:support@yourwebsite.com">Contact Support</a></p>
+            <p>Need help? <a href="mailto:support@codeverse.dev">Contact Support</a></p>
         </div>
     </div>
 </body>
 </html>
 `,
-    });
+  });
 };
 
 export default verifyOtpSend;

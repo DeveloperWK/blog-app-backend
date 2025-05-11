@@ -1,11 +1,13 @@
+import { configDotenv } from "dotenv";
 import transporter from "../config/nodemailer.config.js";
 
+configDotenv();
 const twoFactorAuthOtp = async (email, otp) => {
-    await transporter.sendMail({
-        from: process.env._SMTP_USERNAME,
-        to: email,
-        subject: 'Two Factor Authentication',
-        html: `
+  await transporter.sendMail({
+    from: process.env._SMTP_USERNAME,
+    to: email,
+    subject: "Two Factor Authentication OTP - CodeVerse — A Developer's Diary",
+    html: `
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,7 +23,7 @@ const twoFactorAuthOtp = async (email, otp) => {
                     <!-- Logo -->
                     <tr>
                         <td align="center" style="padding-bottom: 15px;">
-                            <img src="https://yourlogo.com/logo.png" alt="Your Logo" width="100" style="display: block;">
+                            <img src="https://codeverse.dev/logo.png" alt="Your Logo" width="100" style="display: block;">
                         </td>
                     </tr>
 
@@ -58,7 +60,7 @@ const twoFactorAuthOtp = async (email, otp) => {
                     <!-- Footer -->
                     <tr>
                         <td style="padding-top: 25px; font-size: 13px; color: #888;">
-                            <p>Didn't request this code? <a href="mailto:support@yourwebsite.com" style="color: #007bff; text-decoration: none; font-weight: bold;">Contact Support</a></p>
+                            <p>Didn't request this code? <a href="mailto:support@codeverse.dev" style="color: #007bff; text-decoration: none; font-weight: bold;">Contact Support</a></p>
                         </td>
                     </tr>
                 </table>
@@ -69,6 +71,6 @@ const twoFactorAuthOtp = async (email, otp) => {
 </html>
 
 `,
-    });
+  });
 };
 export default twoFactorAuthOtp;

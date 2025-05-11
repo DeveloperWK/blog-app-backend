@@ -20,7 +20,7 @@ const createComment = async (req, res) => {
 const getComments = async (req, res) => {
     try {
         const {blogId} = req.params
-        const comments = await Comment.find({blogPost: blogId}).populate("user", "firstName lastName -_id")
+        const comments = await Comment.find({blogPost: blogId}).populate("user", "firstName")
         res.status(200).json({
             message: "Comments found",
             comments

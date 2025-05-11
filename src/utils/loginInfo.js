@@ -1,12 +1,14 @@
-import parseUserAgent from "./parseUserAgent.js";
-
 const loginInfo = async (req) => {
-    const userAgent = req.headers['user-agent'];
-    const ip = req.ip || req.connection.remoteAddress;
-    const parsedUserAgent = parseUserAgent(userAgent)
-    return {
-        parsedUserAgent,
-        ip,
-    }
-}
+  const userAgent = req.headers["user-agent"] || "Unknown";
+
+  const ip =
+    req.headers["x-forwarded-for"]?.split(",")[0] ||
+    req.socket?.remoteAddress ||
+    req.connection?.remoteAddress ||
+    "Unknown";
+  return {
+    userAgent,
+    ip,
+  };
+};
 export default loginInfo;

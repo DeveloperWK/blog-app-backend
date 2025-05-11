@@ -8,10 +8,10 @@ const getBlogReactions = async (req, res) => {
         const {blogId} = req.params
         const blog = await BlogPost.findById(blogId, "reactionCounts")
         if (!blog) return res.status(404).json({message: "Blog post not found"})
+        const reactionCountsObj = Object.fromEntries(blog.reactionCounts)
         res.status(200).json({
             message: "Blog post reactions found",
-            reactions: blog.reactions,
-            reactionCounts: Object.fromEntries(blog.reactionCounts)
+            reactionCounts:Object.values(reactionCountsObj).reduce((sum,value)=> sum+value,0)
         })
     } catch (error) {
         console.error(error)
@@ -19,8 +19,6 @@ const getBlogReactions = async (req, res) => {
     }
 }
 
-
-// todo Aitake valo moto bujte hobe abar
 const createReactToBlog = async (req, res) => {
     try {
         const {blogId} = req.params
@@ -38,9 +36,11 @@ const createReactToBlog = async (req, res) => {
                 blog.reactionCounts.set(reactionType, Math.max(currentCount - 1, 0))
 
             } else {
-                const oldCount = blog.reactionCounts.get(existingReaction.type) || 0;
-                blog.reactionCounts.set(existingReaction.type, Math.max(oldCount - 1, 0))
-                blog.reactions[existingReactionIndex].type = reactionType
+                    const oldCount = blog.reactionCounts.get(existingReaction.type) || 0;
+                    blog.reactionCounts.set(existingReaction.type, Math.max(oldCount - 1, 0))
+                    blog.reactions[existingReactionIndex].type = reactionType
+                    const newCount = blog.reactionCounts.get(reactionType) || 0;
+                    blog.reactionCounts.set(reactionType, newCount + 1)
             }
         } else {
             blog.reactions.push({type: reactionType, user: userId})

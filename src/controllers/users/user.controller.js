@@ -14,10 +14,6 @@ const getAllWriters = async (req, res) => {
             .skip(skip)
             .limit(pageSize)
             .sort({createdAt: -1})
-            .populate(
-                "posts",
-                "title body tags createdAt image -_id -author -category"
-            )
         const totalWriters = await User.countDocuments({role: "writer"})
         if (!totalWriters) return res.status(404).json({message: "Writers not found"})
         res.status(200).json({
@@ -35,7 +31,7 @@ const getAllWriters = async (req, res) => {
 const getUser = async (req, res) => {
     const {id} = req.params
     try {
-        const user = await User.findById(id).select("-password -_id -otp -otpExpiry -otpSecret -encryptedTokenIv").populate("posts")
+        const user = await User.findById(id).select("-password -_id -otp -otpExpiry -otpSecret -encryptedTokenIv")
         if (!user) return res.status(404).json({message: "User not found"})
         res.status(200).json({
             message: "User found",

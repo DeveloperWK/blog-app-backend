@@ -1,14 +1,14 @@
+import { configDotenv } from "dotenv";
 import transporter from "../config/nodemailer.config.js";
-import {configDotenv} from "dotenv";
 
 configDotenv();
 const userWelcomeMail = async (email, name) => {
-    const date = new Date().getFullYear()
-    await transporter.sendMail({
-        from: process.env._SMTP_USERNAME,
-        to: email,
-        subject: 'Welcome to Our Blog Platform',
-        html: `
+  const date = new Date().getFullYear();
+  await transporter.sendMail({
+    from: process.env._SMTP_USERNAME,
+    to: email,
+    subject: "Welcome to Our Blog Platform - CodeVerse — A Developer's Diary",
+    html: `
 <!DOCTYPE html>
 <html lang="en" style="margin:0; padding:0;">
 <head>
@@ -78,21 +78,20 @@ const userWelcomeMail = async (email, name) => {
 <body>
 
   <div class="container">
-    <h1>Welcome to [Your Blog Name]!</h1>
+    <h1>Welcome to CodeVerse — A Developer's Diary!</h1>
     <p>Hi ${name},</p>
     <p>We're thrilled to have you join our community! 🎉 <br>
     Dive into amazing articles, share your thoughts, and be part of a growing family of passionate readers and writers.</p>
     <p>If you ever have any questions, feel free to reach out. We're here for you!</p>
-    <a href="[Your Website URL]" class="button">Visit Our Blog</a>
+    <a href="${process.env._CLIENT_URL}" class="button" target="_blank">Visit Our Blog</a>
     <div class="footer">
-      &copy; ${date} [Your Blog Name]. All rights reserved.
+      &copy; ${date} CodeVerse — A Developer's Diary. All rights reserved.
     </div>
   </div>
 
 </body>
 </html>
 `,
-    });
-
-}
+  });
+};
 export default userWelcomeMail;

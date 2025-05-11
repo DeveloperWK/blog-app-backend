@@ -1,14 +1,14 @@
+import { configDotenv } from "dotenv";
 import transporter from "../config/nodemailer.config.js";
-import {configDotenv} from "dotenv";
 
 configDotenv();
 const resetPassLink = async (email, token) => {
-    const link = `${process.env._CLIENT_URL}/reset-password?token=${token}`;
-    await transporter.sendMail({
-        from: process.env._SMTP_USERNAME,
-        to: email,
-        subject: 'Password Reset Link',
-        html: `
+  const link = `${process.env._CLIENT_URL}/auth/reset-password?token=${token}`;
+  await transporter.sendMail({
+    from: process.env._SMTP_USERNAME,
+    to: email,
+    subject: "Password Reset Link",
+    html: `
       <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
@@ -76,6 +76,7 @@ const resetPassLink = async (email, token) => {
     .button-wrapper {
       text-align: center;
       margin-top: 25px;
+      margin-bottom: 25px;
     }
 
     .footer {
@@ -109,27 +110,27 @@ const resetPassLink = async (email, token) => {
     <!-- Content Section -->
     <section class="content">
       <p>Hi there,</p>
-      <p>We received a request to reset the password for your account on <strong>[Your Blog App Name]</strong>. If you made this request, please click the button below to reset your password:</p>
+      <p>We received a request to reset the password for your account on <strong>CodeVerse — A Developer's Diary</strong>. If you made this request, please click the button below to reset your password:</p>
 
       <!-- Button Wrapper for Centering -->
       <div class="button-wrapper">
-        <a href="${link}" class="reset-button">Reset Password</a>
+        <a href="${link}" class="reset-button" target="_blank">Reset Password</a>
       </div>
 
-      <p>This link will expire in 1 hour for security reasons. If you did not request a password reset, please ignore this email or contact support if you suspect any misuse.</p>
+      <p>This link will expire in 10 minutes for security reasons. If you did not request a password reset, please ignore this email or contact support if you suspect any misuse.</p>
     </section>
 
     <!-- Footer Section -->
     <footer class="footer">
-      Need help? Contact us at <a href="mailto:support@yourblogapp.com">support@yourblogapp.com</a><br/>
-      &copy; 2025 [Your Blog App Name], All rights reserved.
+      Need help? Contact us at <a href="mailto:support@codeverse.dev">support@codeverse.dev</a><br/>
+      &copy; 2025 CodeVerse — A Developer's Diary, All rights reserved.
     </footer>
   </div>
 </body>
 </html>
 
 `,
-    });
+  });
 };
 
 export default resetPassLink;
