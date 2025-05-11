@@ -1,5 +1,6 @@
 import cors from "cors";
 import express from "express";
+import helmet from "helmet";
 import nodeApiGuard from "node-api-guard";
 import errorHandler from "./middleware/error.middleware.js";
 import notFoundMiddleware from "./middleware/notFound.middleware.js";
@@ -11,7 +12,6 @@ import categoryRoute from "./routes/category.route.js";
 import commentRoute from "./routes/comment.route.js";
 import reactionRoute from "./routes/reaction.route.js";
 import userRoute from "./routes/user.route.js";
-import helmet from "helmet";
 /*
 We're using node-api-guard, my custom NPM middleware package, to add powerful security features to our API...
 1.Rate Limiting (100 requests per minute)
@@ -25,7 +25,7 @@ const APP = express();
 APP.use(express.json())
   .use(
     cors({
-      origin: "*",
+      origin: process.env._CLIENT_URL,
       methods: ["GET", "POST", "PATCH", "DELETE"],
       credentials: true,
     })
