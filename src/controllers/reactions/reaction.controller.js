@@ -1,9 +1,5 @@
 import BlogPost from "../../models/BlogPost.model.js";
 import User from "../../models/User.model.js";
-import {
-  deleteBlogPostKeysFromRedis,
-  deleteBlogPostsKeysFromRedis,
-} from "../../utils/deleteBlogPostKeysFromRedis.js";
 
 void User;
 
@@ -60,8 +56,8 @@ const createReactToBlog = async (req, res) => {
       blog.reactionCounts.set(reactionType, currentCount + 1);
     }
     await blog.save();
-    await deleteBlogPostKeysFromRedis(blogId);
-    await deleteBlogPostsKeysFromRedis();
+    // await deleteBlogPostKeysFromRedis(blogId);
+    // await deleteBlogPostsKeysFromRedis();
     res.status(200).json({
       message: "Reaction added successfully",
       reactions: blog.reactions,
