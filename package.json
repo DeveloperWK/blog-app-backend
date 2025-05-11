@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "build": "webpack",
-    "start": "NODE_ENV=production node dist/server.cjs",
+    "start": "NODE_ENV=production node src/server.js",
     "dev": "NODE_ENV=development nodemon src/server.js",
     "lint": "eslint src/**/*.js"
   },
