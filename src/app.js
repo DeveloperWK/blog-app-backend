@@ -1,6 +1,5 @@
 import cors from "cors";
 import express from "express";
-import helmet from "helmet";
 import nodeApiGuard from "node-api-guard";
 import errorHandler from "./middleware/error.middleware.js";
 import notFoundMiddleware from "./middleware/notFound.middleware.js";
@@ -26,7 +25,7 @@ APP.use(express.json())
   .use(
     cors({
       origin: process.env._CLIENT_URL,
-      methods: ["GET", "POST", "PUT", "DELETE"],
+      methods: ["GET", "POST", "PATCH", "DELETE"],
       credentials: true,
     })
   )
@@ -39,7 +38,7 @@ APP.use(express.json())
       },
     })
   )
-  .use(helmet())
+  // .use(helmet())
   .disable("x-powered-by");
 
 // Routes

@@ -2,7 +2,6 @@ import BookMark from "../../models/BookMark.model.js";
 
 const addBookMark = async (req, res) => {
   const { user, post } = req.body;
-  console.log(user, post);
   try {
     const bookmark = await new BookMark({ user, post }).save();
     res.status(200).json({ message: "Bookmark added successfully", bookmark });

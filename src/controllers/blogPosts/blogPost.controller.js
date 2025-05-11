@@ -2,6 +2,11 @@ import BlogPost from "../../models/BlogPost.model.js";
 import Category from "../../models/category.model.js";
 import User from "../../models/User.model.js";
 import imageUploadService from "../../services/image-upload.service.js";
+import {
+  deleteBlogPostKeysFromRedis,
+  deleteBlogPostsKeysFromRedis,
+} from "../../utils/deleteBlogPostKeysFromRedis.js";
+import { cacheData, getCacheData } from "../../utils/redisUtility.js";
 import blogPostSchema from "./blogPost.validator.js";
 
 void User;
@@ -20,6 +25,7 @@ const createBlogPost = async (req, res) => {
       category,
       image: fileUrl,
     }).save();
+    await deleteBlogPostsKeysFromRedis();
     res.status(200).json({ message: "Blog post created successfully" });
   } catch (error) {
     console.error(error);
@@ -31,11 +37,20 @@ const createBlogPost = async (req, res) => {
 const getBlogPost = async (req, res) => {
   const { id } = req.params;
   try {
+    const cacheKey = `blog-post:${id}`;
+    const cachedData = await getCacheData(cacheKey);
+    if (cachedData) {
+      return res.status(200).json({
+        message: "Blog post found from cache",
+        post: cachedData,
+      });
+    }
     const post = await BlogPost.findById(id).populate(
       "author",
       "firstName avatar -_id"
     );
     if (!post) return res.status(404).json({ message: "Blog post not found" });
+    await cacheData(cacheKey, post);
     res.status(200).json({
       message: "Blog post found",
       post,
@@ -53,6 +68,16 @@ const getBlogPosts = async (req, res) => {
     const pageSize = 10;
     const currentPage = Number(page) || 1;
     const skip = (currentPage - 1) * pageSize;
+    const cacheKey = `blog-posts:${category}:${page}`;
+    const cachedData = await getCacheData(cacheKey);
+    if (cachedData) {
+      return res.status(200).json({
+        message: "Blog posts found from cache",
+        posts: cachedData.posts,
+        currentPage,
+        totalPages: cachedData.totalPages,
+      });
+    }
     const filter = {};
     if (typeof category === "string") {
       const categoryId = await Category.findOne({ name: category }).select(
@@ -69,8 +94,15 @@ const getBlogPosts = async (req, res) => {
       .sort({ createdAt: -1 })
       .populate("author category", "firstName avatar -_id name -_id");
     const totalPosts = await BlogPost.countDocuments(filter);
-    if (!totalPosts)
+    if (!totalPosts) {
+      await deleteBlogPostsKeysFromRedis();
       return res.status(404).json({ message: "Blog posts not found" });
+    }
+    await cacheData(cacheKey, {
+      posts,
+      currentPage,
+      totalPages: Math.ceil((await BlogPost.countDocuments(filter)) / pageSize),
+    });
     res.status(200).json({
       message: "Blog posts found",
       posts,
@@ -88,7 +120,6 @@ const updateBlogPost = async (req, res) => {
   const { id } = req.params;
   try {
     const { title, body, category } = req.body;
-    console.group(title, body, category);
     const updatedPost = await BlogPost.findByIdAndUpdate(
       id,
       {
@@ -98,6 +129,9 @@ const updateBlogPost = async (req, res) => {
       },
       { new: true }
     );
+    await deleteBlogPostKeysFromRedis(id);
+    await deleteBlogPostsKeysFromRedis();
+
     res.status(200).json({
       message: "Blog post updated",
       updatedPost,
@@ -113,11 +147,19 @@ const updateImage = async (req, res) => {
   const { id } = req.params;
   try {
     const file = req.file;
-    console.log(file);
     const fileUrl = await imageUploadService(file);
-    await BlogPost.findByIdAndUpdate(id, { image: fileUrl });
+    const updatedPost = await BlogPost.findByIdAndUpdate(
+      id,
+      {
+        image: fileUrl,
+      },
+      { new: true }
+    );
+    await deleteBlogPostKeysFromRedis(id);
+    await deleteBlogPostsKeysFromRedis();
     res.status(200).json({
       message: "Blog post image updated",
+      updatedPost,
     });
   } catch (error) {
     console.error(error);
@@ -130,6 +172,8 @@ const deleteBlogPost = async (req, res) => {
   const { id } = req.params;
   try {
     await BlogPost.findByIdAndDelete(id);
+    await deleteBlogPostKeysFromRedis(id);
+    await deleteBlogPostsKeysFromRedis();
     res.status(200).json({
       message: "Blog post deleted",
     });

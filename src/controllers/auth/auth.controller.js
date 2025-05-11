@@ -304,5 +304,6 @@ export {
   resendOtp,
   resetPasswordLink,
   twoFactorAuth,
-  verifyOtp,
+  verifyOtp
 };
+
