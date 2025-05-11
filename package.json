@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "build": "webpack",
-    "start": "NODE_ENV=production node src/server.js",
-    "dev": "NODE_ENV=development nodemon src/server.js",
+    "start": "NODE_ENV=production node dist/server.cjs",
+    "dev": "NODE_ENV=development nodemon src/index.js",
     "lint": "eslint src/**/*.js"
   },
   "keywords": [],
