@@ -23,7 +23,7 @@ if (cluster.isPrimary) {
     cluster.fork();
   });
 }
-const PORT = process.env._PORT || 5000;
+const PORT = process.env.PORT || 5000;
 connectDB().then(() => {
   APP.listen(PORT, () => {
     console.log(

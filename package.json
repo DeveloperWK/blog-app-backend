@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "start": "NODE_ENV=production node dist/server.cjs",
-    "dev": "NODE_ENV=development nodemon src/index.js",
+    "dev": "NODE_ENV=development nodemon src/server.js",
     "lint": "eslint src/**/*.js"
   },
   "keywords": [],
