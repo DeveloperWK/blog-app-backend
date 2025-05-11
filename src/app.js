@@ -24,7 +24,7 @@ const APP = express();
 APP.use(express.json())
   .use(
     cors({
-      origin: process.env._CLIENT_URL,
+      origin: "*",
       methods: ["GET", "POST", "PATCH", "DELETE"],
       credentials: true,
     })
@@ -38,7 +38,7 @@ APP.use(express.json())
       },
     })
   )
-  // .use(helmet())
+  .use(helmet())
   .disable("x-powered-by");
 
 // Routes
